@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Live Forex & Crypto LED Ticker</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#000;
+    overflow:hidden;
+    font-family:Arial, sans-serif;
+}
+
+.ticker-wrap{
+    width:100%;
+    overflow:hidden;
+    white-space:nowrap;
+    background:#111;
+    padding:14px 0;
+    border-top:2px solid #222;
+    border-bottom:2px solid #222;
+}
+
+.ticker{
+    display:inline-block;
+    padding-left:100%;
+    animation:tickerMove 40s linear infinite;
+    font-size:32px;
+    font-weight:bold;
+    color:white;
+}
+
+.item{
+    margin-right:90px;
+}
+
+.symbol{
+    color:#ffffff;
+    margin-right:12px;
+}
+
+.price{
+    color:#00ff66;
+}
+
+@keyframes tickerMove{
+    0%{
+        transform:translateX(0);
+    }
+
+    100%{
+        transform:translateX(-100%);
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="ticker-wrap">
+
+<div class="ticker">
+
+<span class="item">
+<span class="symbol">XAUUSD</span>
+<span class="price" id="gold">Loading...</span>
+</span>
+
+<span class="item">
+<span class="symbol">SILVER</span>
+<span class="price" id="silver">Loading...</span>
+</span>
+
+<span class="item">
+<span class="symbol">OIL</span>
+<span class="price" id="oil">Loading...</span>
+</span>
+
+<span class="item">
+<span class="symbol">BTCUSD</span>
+<span class="price" id="btc">Loading...</span>
+</span>
+
+<span class="item">
+<span class="symbol">EURUSD</span>
+<span class="price" id="eurusd">Loading...</span>
+</span>
+
+<span class="item">
+<span class="symbol">JPYUSD</span>
+<span class="price" id="jpyusd">Loading...</span>
+</span>
+
+<span class="item">
+<span class="symbol">AUDUSD</span>
+<span class="price" id="audusd">Loading...</span>
+</span>
+
+</div>
+
+</div>
+
+<script>
+
+async function updatePrices(){
+
+try{
+
+const response = await fetch('https://api.binance.com/api/v3/ticker/price');
+
+const data = await response.json();
+
+function getPrice(symbol){
+
+const item = data.find(x => x.symbol === symbol);
+
+if(item){
+    return parseFloat(item.price).toFixed(2);
+}else{
+    return "N/A";
+}
+
+}
+
+document.getElementById("btc").innerHTML = "$" + getPrice("BTCUSDT");
+
+document.getElementById("eurusd").innerHTML = getPrice("EURUSDT");
+
+document.getElementById("audusd").innerHTML = getPrice("AUDUSDT");
+
+document.getElementById("jpyusd").innerHTML = getPrice("JPYUSDT");
+
+document.getElementById("gold").innerHTML = "Live";
+
+document.getElementById("silver").innerHTML = "Live";
+
+document.getElementById("oil").innerHTML = "Live";
+
+}catch(error){
+
+console.log("API Error", error);
+
+}
+
+}
+
+updatePrices();
+
+setInterval(updatePrices, 10000);
+
+</script>
+
+</body>
+</html>
